@@ -76,6 +76,10 @@ docker run -d --name=notes-api --rm --network=notes-app-network -p 8080:8080 -e 
 * -e MONGO_URL=mongodb://mongo:27017/notes: Sets an environment variable MONGO_URL inside the container.
 * notes-api:latest: Specifies the image to use (notes-api with the latest tag).
 
+##### notes-api docker image (dockerhub)
+```bash
+docker pull kaushalaltair/notes-api:1.0.0
+```
 # Deploying with Kubernetes 🌐
 ### Using Minikube 🖥️
 
