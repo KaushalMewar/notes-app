@@ -1,0 +1,59 @@
+# This Kubernetes configuration file defines three resources for setting up a MongoDB instance: a PersistentVolumeClaim, a Service, and a Deployment.
+
+# Define the PersistentVolumeClaim resource
+apiVersion: v1 # Specifies the API version for the PersistentVolumeClaim resource
+kind: PersistentVolumeClaim # Specifies that this resource is a PersistentVolumeClaim
+metadata:
+  name: mongo-pvc # Name of the PersistentVolumeClaim resource
+spec:
+  accessModes:
+    - ReadWriteOnce # Access mode, allowing the volume to be mounted as read-write by a single node
+  resources:
+    requests:
+      storage: 256Mi # Requests 256 MiB of storage for the volume
+
+---
+# Define the Service resource
+apiVersion: v1 # Specifies the API version for the Service resource
+kind: Service # Specifies that this resource is a Service
+metadata:
+  name: mongo # Name of the Service resource
+spec:
+  selector:
+    app: mongo # Selects pods with the label app: mongo to be managed by this Service
+  ports:
+    - port: 27017 # Port on which the Service listens
+      targetPort: 27017 # Port on the pod to which the traffic is forwarded
+
+---
+# Define the Deployment resource
+apiVersion: apps/v1 # Specifies the API version for the Deployment resource
+kind: Deployment # Specifies that this resource is a Deployment
+metadata:
+  name: mongo # Name of the Deployment resource
+spec:
+  selector:
+    matchLabels:
+      app: mongo # Selects pods with the label app: mongo to be managed by this Deployment
+  template:
+    metadata:
+      labels:
+        app: mongo # Label assigned to pods created by this Deployment
+    spec:
+      containers:
+        - name: mongo # Name of the container
+          image: mongo # Docker image for the MongoDB container
+          ports:
+            - containerPort: 27017 # Port the container listens on
+          volumeMounts:
+            - name: storage # Name of the volume to mount
+              mountPath: /data/db # Path in the container where the volume is mounted
+      volumes:
+        - name: storage # Name of the volume
+          persistentVolumeClaim:
+            claimName: mongo-pvc # References the PersistentVolumeClaim named mongo-pvc
+
+# This PersistentVolumeClaim (mongo-pvc) requests a persistent storage volume of 256 MiB for MongoDB data.
+# The Service (mongo) exposes MongoDB on port 27017 within the cluster.
+# The Deployment runs a MongoDB container using the mongo Docker image, listens on port 27017, and mounts the persistent storage at /data/db.
+# This ensures MongoDB's data persists even if the pod is deleted or moved.

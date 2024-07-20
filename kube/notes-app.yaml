@@ -1,0 +1,44 @@
+# This is a Kubernetes configuration file that defines two resources: a Deployment and a Service for an application called "notes-api".
+
+# Define the Deployment resource
+apiVersion: apps/v1 # Specifies the API version for the Deployment resource
+kind: Deployment # Specifies that this resource is a Deployment
+metadata:
+  name: notes-api # Name of the Deployment resource
+spec:
+  replicas: 1 # Number of replicas (pods) to run
+  selector:
+    matchLabels:
+      app: notes-api # Selects pods with the label app: notes-api to be managed by this Deployment
+  template:
+    metadata:
+      labels:
+        app: notes-api # Label assigned to pods created by this Deployment
+    spec:
+      containers:
+        - name: notes-api # Name of the container
+          image: kaushalaltair/notes-api:1.0.0 # Docker image for the container
+          ports:
+            - containerPort: 8080 # Port the container listens on
+          env:
+            - name: MONGO_URL # Environment variable available to the container
+              value: mongodb://mongo:27017/notes # Value of the environment variable
+          imagePullPolicy: Always # Forces the Docker image to be pulled every time the pod starts
+
+---
+# Define the Service resource
+apiVersion: v1 # Specifies the API version for the Service resource
+kind: Service # Specifies that this resource is a Service
+metadata:
+  name: notes-api # Name of the Service resource
+spec:
+  selector:
+    app: notes-api # Selects pods with the label app: notes-api to be managed by this Service
+  ports:
+    - port: 80 # Port on which the Service listens
+      targetPort: 8080 # Port on the pod to which the traffic is forwarded
+  type: LoadBalancer # Makes the pods accessible from outside the cluster
+
+# This Deployment runs a single instance (replica) of the "notes-api" application using the specified Docker image.
+# It labels the pods with app: notes-api, sets an environment variable MONGO_URL, and always pulls the Docker image.
+# The Service exposes these pods on port 80 and forwards traffic to port 8080 inside the pods, allowing external access through a LoadBalancer.
