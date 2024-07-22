@@ -1,4 +1,4 @@
-package io.km.notes.models;
+package io.km.notes.model;
 
 public class SuccessResponse<T> {
 

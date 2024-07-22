@@ -1,10 +1,10 @@
-package io.km.notes.services;
+package io.km.notes.service;
 
-import io.km.notes.models.ErrorResponse;
-import io.km.notes.models.Note;
-import io.km.notes.models.NoteResponse;
-import io.km.notes.models.SuccessResponse;
-import io.km.notes.repositorys.NotesRepository;
+import io.km.notes.model.ErrorResponse;
+import io.km.notes.model.Note;
+import io.km.notes.model.NoteResponse;
+import io.km.notes.model.SuccessResponse;
+import io.km.notes.repository.NotesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
